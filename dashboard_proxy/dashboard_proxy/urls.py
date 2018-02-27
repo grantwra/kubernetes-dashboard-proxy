@@ -14,11 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.conf.urls.static import static
+from django.conf import settings
 from django.contrib import admin
 from django.http import JsonResponse
+from django.views.static import serve
 from app import proxy
 
 urlpatterns = [
+    url(r'^testing_static', proxy.login),
     url(r'^healthz', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
     url(r'^', proxy.proxy),
 ]
