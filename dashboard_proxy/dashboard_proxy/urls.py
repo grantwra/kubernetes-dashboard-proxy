@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.http import JsonResponse
 from app import proxy
 
 urlpatterns = [
+    url(r'^healthz', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
     url(r'^', proxy.proxy),
 ]
