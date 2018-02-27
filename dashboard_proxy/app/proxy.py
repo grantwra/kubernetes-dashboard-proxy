@@ -1,16 +1,24 @@
-from django.http import JsonResponse
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import requests
+import os
 
 
+@csrf_exempt
 def proxy(request):
     path = request.get_full_path()
-    requests_response = requests.get('http://kubernetes-dashboard.kube-system:443' + path)
 
-    django_response = HttpResponse(
-        content=requests_response.content,
-        status=requests_response.status_code,
-        content_type=requests_response.headers['Content-Type']
+    dashboard_response = requests.get(
+    	'http://' + os.getenv(
+    		'DASHBOARD_INTERNAL_ENDPOINT',
+    		'kubernetes-dashboard.kube-system'
+    		) + '.svc.cluster.local' + path
+    	)
+
+    response = HttpResponse(
+        content=dashboard_response.content,
+        status=dashboard_response.status_code,
+        content_type=dashboard_response.headers['Content-Type']
     )
 
-    return JsonResponse({'status':'ok'}, status=200)
+    return response
