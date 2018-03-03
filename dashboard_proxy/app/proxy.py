@@ -1,8 +1,11 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import os
 from django.conf import settings
+import hashlib
+import uuid
+import json
 
 
 @csrf_exempt
@@ -52,3 +55,40 @@ def login_post(request):
         content_type='document'
     )
     return response
+
+@csrf_exempt
+def login_post(request):
+    if request.method != 'POST':
+        returned = JsonResponse({'status': 'Invalid Request'}, status=403)
+        returned['Access-Control-Allow-Origin'] = '*'
+        return returned
+    data = json.loads(request.body)
+    username = data.get('username', '')
+    password = data.get('password', '')
+    try:
+        query = BMT_users.objects.get(username=username)
+    except Exception as e:
+        returned = JsonResponse({'status': 'Unauthorized'}, status=403)
+        returned['Access-Control-Allow-Origin'] = '*'
+        return returned
+    id = query.id
+    salt = query.salt
+    pw = query.password
+    hashed_password = str(hashlib.sha512(password + salt).hexdigest())
+    if pw == hashed_password:
+        session_token = uuid.uuid1()
+        query.session_token = session_token
+        query.save()
+        response = HttpResponse(
+            content='{"status":"ok"}',
+            status=200,
+            content_type='document'
+        )
+        response.set_cookie('dashboard.session', session_token) 
+        return returned
+    else:
+        final_array = dict()
+        final_array['status'] = 'Unauthorized'
+        returned = JsonResponse(final_array, status=403)
+        returned['Access-Control-Allow-Origin'] = '*'
+        return returned
