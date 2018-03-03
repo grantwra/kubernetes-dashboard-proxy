@@ -215,7 +215,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
   function submitLogin(form) {
-    var url = 'http://192.168.99.100:31124/login_post'
+    var url = 'http://localhost:8000/login_post'
     var data = '{"username":"' + form.username.value + '","password":"' + form.password.value + '"}'
     try {
       $.ajax({

@@ -27,7 +27,7 @@ spec:
           - name: HOST_NAME
             value: '*'
           - name: HOST_URL
-            value: 'https://something.example.com'
+            value: 'http://localhost:8000/'
           - name: DASHBOARD_INTERNAL_ENDPOINT
             value: 'kubernetes-dashboard.kube-system'
         ports:
