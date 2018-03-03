@@ -26,5 +26,5 @@ urlpatterns = [
     url(r'^login_post$', proxy.login_post),
     url(r'^healthz$', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
     url(r'^favicon.ico/$', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
-    url(r'^.*/$', proxy.proxy),
+    url(r'^.*$', proxy.proxy),
 ]

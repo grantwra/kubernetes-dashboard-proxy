@@ -36,7 +36,5 @@ pushcontainer:
 	docker build -t $(CONTAINER_NAME) .
 
 	docker tag $(CONTAINER_NAME):latest $(CONTAINER_URL):$(TAG)
-	docker tag $(CONTAINER_URL):$(TAG) $(CONTAINER_URL):latest
 
-	docker push $(CONTAINER_URL):latest
 	docker push $(CONTAINER_URL):$(TAG)
