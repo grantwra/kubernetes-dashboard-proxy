@@ -1,0 +1,35 @@
+# [START kubernetes_deployment]
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kubernetes-dashboard-proxy
+  labels:
+    app: kubernetes-dashboard-proxy
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: kubernetes-dashboard-proxy
+    spec:
+      containers:
+      - name: kubernetes-dashboard-proxy
+        image: grantwra/kubernetes-dashboard-proxy:25e3c277902abe2d8cea5c1584dba4722dbd4ffe
+        imagePullPolicy: Always
+        env:
+          - name: HOST_NAME
+            value: '*'
+          - name: HOST_URL
+            value: 'http://localhost:8000/'
+          - name: DASHBOARD_INTERNAL_ENDPOINT
+            value: 'kubernetes-dashboard.kube-system'
+        ports:
+        - containerPort: 8000
+# [END kubernetes_deployment]
