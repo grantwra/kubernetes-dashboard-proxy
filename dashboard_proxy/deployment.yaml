@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: kubernetes-dashboard-proxy
-        image: grantwra/kubernetes-dashboard-proxy:feb26-test16
+        image: grantwra/kubernetes-dashboard-proxy:25e3c277902abe2d8cea5c1584dba4722dbd4ffe
         imagePullPolicy: Always
         env:
           - name: HOST_NAME
