@@ -25,7 +25,7 @@ SECRET_KEY = 'nb-s*jtrm*7mamo$xi48f9a7m0*iofp=t@xj!i6(^$45ofuw4p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
+ALLOWED_HOSTS = [os.getenv('HOST_NAME', '*')]
 
 
 # Application definition
@@ -120,3 +120,4 @@ USE_TZ = True
 
 STATIC_URL = '/django_static/'
 STATIC_ROOT = '/src/django_static/'
+HOST_URL = os.getenv('HOST_URL', 'http://localhost:8000/')

@@ -24,8 +24,10 @@ spec:
         image: grantwra/kubernetes-dashboard-proxy:feb26-test16
         imagePullPolicy: Always
         env:
-          - name: ALLOWED_HOSTS
+          - name: HOST_NAME
             value: '*'
+          - name: HOST_URL
+            value: 'https://something.example.com'
           - name: DASHBOARD_INTERNAL_ENDPOINT
             value: 'kubernetes-dashboard.kube-system'
         ports:

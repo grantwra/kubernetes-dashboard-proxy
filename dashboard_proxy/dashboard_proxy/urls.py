@@ -22,7 +22,9 @@ from django.views.static import serve
 from app import proxy
 
 urlpatterns = [
-    url(r'^testing_static', proxy.login),
-    url(r'^healthz', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
-    url(r'^', proxy.proxy),
+    url(r'^login$', proxy.login),
+    url(r'^login_post$', proxy.login_post),
+    url(r'^healthz$', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
+    url(r'^favicon.ico/$', (lambda x: JsonResponse({'status': 'ok'}, status=200))),
+    url(r'^.*/$', proxy.proxy),
 ]
