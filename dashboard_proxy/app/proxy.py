@@ -81,11 +81,11 @@ def login_post(request):
         query.session_token = session_token
         query.save()
         response = HttpResponse(
-            content=settings.HOST_URL,
+            content=settings.HOST_URL + "#!/overview",
             status=302,
             content_type='document'
         )
-        response['Location'] = settings.HOST_URL
+        response['Location'] = settings.HOST_URL + "#!/overview"
         response.set_cookie('dashboard.session', session_token)
         response.set_cookie('dashboard.user', username) 
         return response
