@@ -226,6 +226,7 @@
         data: data,
         success: function(data){
           alert("Redirecting to Dashboard");
+          window.open("http://localhost:8000/#!/overview", "_self");
         },
         error: function(data){
           alert("Incorrect username or password[1]");
