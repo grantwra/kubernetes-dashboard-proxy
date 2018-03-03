@@ -6,12 +6,23 @@ from django.conf import settings
 import hashlib
 import uuid
 import json
+from app.models import PROXY_users
 
 
 @csrf_exempt
 def proxy(request):
-    cookie = request.COOKIES.get('dashboard.session')
-    if cookie is None:
+    session_cookie = request.COOKIES.get('dashboard.session')
+    user_cookie = request.COOKIES.get('dashboard.user')
+    session_token = ''
+    if session_cookie is None or user_cookie is None:
+        return HttpResponseRedirect(settings.HOST_URL + "login")
+    try:
+        query = PROXY_users.objects.get(username=user_cookie)
+        session_token = query.session_token
+    except Exception as e:
+        return HttpResponseRedirect(settings.HOST_URL + "login")
+
+    if session_cookie != session_token:
         return HttpResponseRedirect(settings.HOST_URL + "login")
 
     path = request.get_full_path()
@@ -46,16 +57,6 @@ def login(request):
     )
     return response
 
-def login_post(request):
-    response_content = '{"status": "ok"}'
-
-    response = HttpResponse(
-        content=response_content,
-        status=200,
-        content_type='document'
-    )
-    return response
-
 @csrf_exempt
 def login_post(request):
     if request.method != 'POST':
@@ -66,7 +67,7 @@ def login_post(request):
     username = data.get('username', '')
     password = data.get('password', '')
     try:
-        query = BMT_users.objects.get(username=username)
+        query = PROXY_users.objects.get(username=username)
     except Exception as e:
         returned = JsonResponse({'status': 'Unauthorized'}, status=403)
         returned['Access-Control-Allow-Origin'] = '*'
@@ -74,18 +75,20 @@ def login_post(request):
     id = query.id
     salt = query.salt
     pw = query.password
-    hashed_password = str(hashlib.sha512(password + salt).hexdigest())
+    hashed_password = str(hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest())
     if pw == hashed_password:
         session_token = uuid.uuid1()
         query.session_token = session_token
         query.save()
         response = HttpResponse(
-            content='{"status":"ok"}',
-            status=200,
+            content=settings.HOST_URL + "overview/",
+            status=302,
             content_type='document'
         )
-        response.set_cookie('dashboard.session', session_token) 
-        return returned
+        response['Location'] = settings.HOST_URL + "overview/"
+        response.set_cookie('dashboard.session', session_token)
+        response.set_cookie('dashboard.user', username) 
+        return response
     else:
         final_array = dict()
         final_array['status'] = 'Unauthorized'
