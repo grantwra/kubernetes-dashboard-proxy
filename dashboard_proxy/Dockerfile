@@ -13,6 +13,5 @@ EXPOSE 8000
 CMD python manage.py collectstatic && \
 	python manage.py makemigrations && \
 	python manage.py migrate && \
-	python createuser.py admin password && \
 	python configure.py && \
 	python manage.py runserver 0.0.0.0:8000

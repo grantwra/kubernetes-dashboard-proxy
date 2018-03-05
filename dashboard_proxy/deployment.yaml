@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: kubernetes-dashboard-proxy
-        image: grantwra/kubernetes-dashboard-proxy:25e3c277902abe2d8cea5c1584dba4722dbd4ffe
+        image: grantwra/kubernetes-dashboard-proxy:latest
         imagePullPolicy: Always
         env:
           - name: HOST_NAME
@@ -30,6 +30,8 @@ spec:
             value: 'http://localhost:8000/'
           - name: DASHBOARD_INTERNAL_ENDPOINT
             value: 'kubernetes-dashboard.kube-system'
+          - name: DASHBOARD_USERS
+            value: 'admin'
         ports:
         - containerPort: 8000
 # [END kubernetes_deployment]
