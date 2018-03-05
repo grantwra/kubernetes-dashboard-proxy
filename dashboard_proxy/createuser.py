@@ -5,17 +5,8 @@ from sqlite3 import Error
 import hashlib
 import uuid
 import sys
+import os
 
-
-USERNAME = ''
-PASSWORD = ''
-
-
-if len(sys.argv) < 3:
-    exit(1)
-else:
-    USERNAME = sys.argv[1]
-    PASSWORD = sys.argv[2]
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -61,18 +52,21 @@ def create_user(conn, user):
     cur.execute(sql, user)
 
  
-def main():
+def main(username, password):
     database = "db.sqlite3"
  
     # create a database connection
     conn = create_connection(database)
     with conn:
         salt = uuid.uuid4().hex
-        hashed_password = str(hashlib.sha512(PASSWORD.encode('utf-8') + salt.encode('utf-8')).hexdigest())
-        new_user = (hashed_password, USERNAME, salt)
+        hashed_password = str(hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest())
+        new_user = (hashed_password, username, salt)
         create_user(conn, new_user)
-        select_all_users(conn)
+        if os.getenv('DASHBOARD_ENVIRONMENT', '') == 'development':
+            select_all_users(conn)
  
  
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) < 3:
+        exit(1)
+    main(sys.argv[1], sys.argv[2])

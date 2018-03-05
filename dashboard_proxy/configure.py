@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import os
+import createuser as createuser
+import uuid
 
 LOGIN_PAGE = 'django_static/app/login.html'
 
@@ -21,8 +23,20 @@ def configure_login_page():
     f.close()
 
 
+def create_users():
+    users = os.getenv('DASHBOARD_USERS', 'admin').split(',')
+    for u in users:
+        username = u.strip()
+        password = uuid.uuid4().hex
+        if username == 'admin':
+            password = 'password'
+        print('Username: %s -> Password: %s' % (username, password))
+        createuser.main(username, password)
+
+
 def main():
     configure_login_page()
+    create_users()
  
  
 if __name__ == '__main__':
